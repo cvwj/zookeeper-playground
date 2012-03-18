@@ -1,10 +1,10 @@
 package dk.cooldev.elasticsearch.service;
 
-import com.sun.istack.internal.NotNull;
 import dk.cooldev.elasticsearch.bean.Document;
-import org.elasticsearch.search.sort.SortOrder;
+import dk.cooldev.elasticsearch.bean.DocumentList;
+import dk.cooldev.elasticsearch.bean.FetchSpec;
+import dk.cooldev.elasticsearch.bean.LSFilterList;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,31 +16,14 @@ import java.util.List;
  */
 public interface ElasticSearchService {
     
-    public Document get(String originId);
+    public Document get(int list, String originId);
     
-    public void addOrUpdate(Document document, int listId);
+    public void addOrUpdate(int list, Document document);
 
-    public void removeFromList(Document document, int listId);
-
-    public void delete(Document document);
+    public void delete(int list, Document document);
     
     public long count(int list);
 
-    public List<Document> getByQuerySpec(QuerySpec querySpec);
+    public DocumentList findByFilter(int i, LSFilterList filterList, FetchSpec fetchSpec);
 
-    class QuerySpec {
-        public QuerySpec(@NotNull List<Integer> lists, @NotNull Document.Type documentType, @NotNull String field) {
-            this.lists = lists;
-            this.documentType = documentType;
-            this.field = field;
-        }
-
-        public List<Integer> lists;
-        public Document.Type documentType;
-        public String field;
-        public SortOrder sortOrder;
-        public int page;
-        public int pageSize;
-
-    }
 }

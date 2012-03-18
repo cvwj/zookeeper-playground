@@ -1,5 +1,6 @@
 package dk.cooldev.elasticsearch.bean;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ public class Document {
     
     private String originId;
     private Type type;
+    private Date indexed;
 
     private Map properties = new HashMap();
 
@@ -40,5 +42,13 @@ public class Document {
 
     public void setProperties(Map properties) {
         this.properties = properties;
+    }
+
+    public Date getIndexed() {
+        return indexed;
+    }
+
+    public void setIndexed(Date indexed) {
+        this.indexed = indexed;
     }
 }
