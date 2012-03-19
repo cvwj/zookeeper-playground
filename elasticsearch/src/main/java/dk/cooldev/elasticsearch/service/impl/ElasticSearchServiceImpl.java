@@ -115,8 +115,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
     public DocumentList findByFilter(int list, LSFilterList filterList, FetchSpec fetchSpec) {
         SearchRequestBuilder requestBuilder = client.prepareSearch("lists");
         requestBuilder
-                .setRouting(getRouting(list))
-                .setSearchType(SearchType.QUERY_AND_FETCH)
+                .setSearchType(SearchType.QUERY_AND_FETCH) // Optimal searchtype, as all documents on a list are routed to the same shard
                 .setFilter(convertToLuceneFilter(list, filterList))
                 .setFrom(fetchSpec.getOffset())
                 .setSize(fetchSpec.getPageSize())
@@ -140,9 +139,6 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
         return result;
     }
 
-    private String getRouting(int list) {
-        return "list:" + list;
-    }
 
     private FilterBuilder convertToLuceneFilter(int list, LSFilterList filterList) {
 

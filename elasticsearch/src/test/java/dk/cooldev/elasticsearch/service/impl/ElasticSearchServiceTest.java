@@ -1,8 +1,6 @@
 package dk.cooldev.elasticsearch.service.impl;
 
-import dk.cooldev.elasticsearch.bean.Document;
-import dk.cooldev.elasticsearch.bean.LSFilterList;
-import dk.cooldev.elasticsearch.bean.LSInFilter;
+import dk.cooldev.elasticsearch.bean.*;
 import org.junit.Test;
 
 import java.util.*;
@@ -137,7 +135,8 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         create10Documents();
         LSFilterList filterList = new LSFilterList();
         filterList.addIn("originId", Arrays.asList(new Object[] {2, 5, 9, 9}), LSInFilter.Execution.ANY);
-        List<Document> documents = service.findByFilter(1, filterList);
+        DocumentList result = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        List<Document> documents = result.getDocuments();
         assertEquals(3, documents.size());
         assertEquals("2", documents.get(0).getOriginId());
         assertEquals("5", documents.get(1).getOriginId());
@@ -149,7 +148,8 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         create10Documents();
         LSFilterList filterList = new LSFilterList();
         filterList.addIn("headline", Arrays.asList(new Object[] {"some", "1"}), LSInFilter.Execution.ALL);
-        List<Document> documents = service.findByFilter(1, filterList);
+        DocumentList result = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        List<Document> documents = result.getDocuments();
         assertEquals(1, documents.size());
         assertEquals("1", documents.get(0).getOriginId());
     }
@@ -161,7 +161,8 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         Date cutDate = getDateAt12oclock(-3);
         filterList.addSimpleFilter("publishedDate", cutDate, LSFilterList.OP.GE);
 
-        List<Document> documents = service.findByFilter(1, filterList);
+        DocumentList result = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        List<Document> documents = result.getDocuments();
         assertEquals(4, documents.size());
         assertEquals("0", documents.get(0).getOriginId());
         assertEquals("1", documents.get(1).getOriginId());
@@ -176,7 +177,8 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         Date cutDate = getDateAt12oclock(-3);
         filterList.addSimpleFilter("publishedDate", cutDate, LSFilterList.OP.GT);
 
-        List<Document> documents = service.findByFilter(1, filterList);
+        DocumentList result = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        List<Document> documents = result.getDocuments();
         assertEquals(3, documents.size());
         assertEquals("0", documents.get(0).getOriginId());
         assertEquals("1", documents.get(1).getOriginId());
@@ -190,7 +192,8 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         LSFilterList filterList = new LSFilterList();
         filterList.addSimpleFilter("publishedDate", cutDate, LSFilterList.OP.LE);
 
-        List<Document> documents = service.findByFilter(1, filterList);
+        DocumentList result = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        List<Document> documents = result.getDocuments();
         assertEquals(7, documents.size());
         assertEquals("3", documents.get(0).getOriginId());
         assertEquals("4", documents.get(1).getOriginId());
@@ -210,7 +213,8 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         LSFilterList filterList = new LSFilterList();
         filterList.addSimpleFilter("publishedDate", cutDate, LSFilterList.OP.LT);
 
-        List<Document> documents = service.findByFilter(1, filterList);
+        DocumentList result = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        List<Document> documents = result.getDocuments();
         assertEquals(6, documents.size());
         assertEquals("4", documents.get(0).getOriginId());
         assertEquals("5", documents.get(1).getOriginId());
@@ -226,7 +230,8 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         LSFilterList filterList = new LSFilterList();
         filterList.addSimpleFilter("reach", 6, LSFilterList.OP.EQ);
 
-        List<Document> documents = service.findByFilter(1, filterList);
+        DocumentList result = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        List<Document> documents = result.getDocuments();
         assertEquals(1, documents.size());
         assertEquals("6", documents.get(0).getOriginId());
     }
@@ -237,7 +242,8 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         LSFilterList filterList = new LSFilterList();
         filterList.addSimpleFilter("reach", 6, LSFilterList.OP.NE);
 
-        List<Document> documents = service.findByFilter(1, filterList);
+        DocumentList result = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        List<Document> documents = result.getDocuments();
         assertEquals(9, documents.size());
         assertEquals("0", documents.get(0).getOriginId());
         assertEquals("1", documents.get(1).getOriginId());
@@ -256,7 +262,8 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         LSFilterList filterList = new LSFilterList();
         filterList.addRange("reach", 2, 6, false);
 
-        List<Document> documents = service.findByFilter(1, filterList);
+        DocumentList result = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        List<Document> documents = result.getDocuments();
         assertEquals(3, documents.size());
         assertEquals("3", documents.get(0).getOriginId());
         assertEquals("4", documents.get(1).getOriginId());
@@ -270,7 +277,8 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         LSFilterList filterList = new LSFilterList();
         filterList.addRange("reach", 2, 6, true);
 
-        List<Document> documents = service.findByFilter(1, filterList);
+        DocumentList result = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        List<Document> documents = result.getDocuments();
         assertEquals(5, documents.size());
         assertEquals("2", documents.get(0).getOriginId());
         assertEquals("3", documents.get(1).getOriginId());
@@ -286,7 +294,8 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         LSFilterList filterList = new LSFilterList();
         filterList.addIn("originId", Arrays.asList(new Object[]{2, 5, 9, 9}), null);
         filterList.addIn("reach", Arrays.asList(new Object[] {4, 5, 6}), null);
-        List<Document> documents = service.findByFilter(1, filterList);
+        DocumentList result = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        List<Document> documents = result.getDocuments();
         assertEquals(1, documents.size());
         assertEquals("5", documents.get(0).getOriginId());
     }
@@ -297,7 +306,8 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         LSFilterList filterList = new LSFilterList();
         filterList.addIn("originId", Arrays.asList(new Object[]{2, 5, 9, 9}), null);
         filterList.addRange("reach", 2, 8, true);
-        List<Document> documents = service.findByFilter(1, filterList);
+        DocumentList result = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        List<Document> documents = result.getDocuments();
         assertEquals(2, documents.size());
         assertEquals("2", documents.get(0).getOriginId());
         assertEquals("5", documents.get(1).getOriginId());
@@ -310,12 +320,34 @@ public class ElasticSearchServiceTest extends AbstractElasticSearchTest {
         filterList.addIn("originId", Arrays.asList(new Object[] {2, 5, 9, 9}), null);
         filterList.addRange("reach", 2, 8, true);
         filterList.addSimpleFilter("publishedDate", getDateAt12oclock(-5), LSFilterList.OP.NE);
-        List<Document> documents = service.findByFilter(1, filterList);
-        assertEquals(1, documents.size());
-        assertEquals("2", documents.get(0).getOriginId());
+        DocumentList documents = service.findByFilter(1, filterList, new FetchSpec(0, 10, "publishedDate", FetchSpec.Order.DESC));
+        assertEquals(1, documents.getTotalHits());
+        assertEquals("2", documents.getDocuments().get(0).getOriginId());
     }
 
 
+    @Test
+    public void offsetAndPagesize()
+    {
+        create10Documents();
+        LSFilterList filterList = new LSFilterList();
+        DocumentList documents = service.findByFilter(1, filterList, new FetchSpec(3, 2, "publishedDate", FetchSpec.Order.DESC));
+        assertEquals(10, documents.getTotalHits());
+        assertEquals(2, documents.getDocuments().size());
+        assertEquals("3", documents.getDocuments().get(0).getOriginId());
+        assertEquals("4", documents.getDocuments().get(1).getOriginId());
+    }
+    @Test
+    public void sortOrder()
+    {
+        create10Documents();
+        LSFilterList filterList = new LSFilterList();
+        DocumentList documents = service.findByFilter(1, filterList, new FetchSpec(3, 2, "publishedDate", FetchSpec.Order.ASC));
+        assertEquals(10, documents.getTotalHits());
+        assertEquals(2, documents.getDocuments().size());
+        assertEquals("6", documents.getDocuments().get(0).getOriginId());
+        assertEquals("5", documents.getDocuments().get(1).getOriginId());
+    }
 
 
 

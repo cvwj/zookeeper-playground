@@ -38,9 +38,9 @@ public abstract class AbstractElasticSearchTest {
     @BeforeClass
     public static void init() {
         Settings settings = ImmutableSettings.settingsBuilder().put("index.number_of_shards", 1).put("index.number_of_replicas", 0).put("gateway.type", "none").build();
-//        node = nodeBuilder().local(true).data(true).settings(settings).node();
+        node = nodeBuilder().local(true).data(true).settings(settings).node();
 
-        node = nodeBuilder().node();
+//        node = nodeBuilder().node();
         client = node.client();
 //
 //        Settings settings = ImmutableSettings.settingsBuilder()
@@ -128,7 +128,6 @@ public abstract class AbstractElasticSearchTest {
         IndexRequest indexRequest = new IndexRequest("lists", document.getType().name(), id);
         indexRequest.type(document.getType().name());
         indexRequest.source(document.getProperties());
-
         client.index(indexRequest).actionGet();
         client.admin().indices().refresh(new RefreshRequest("lists").waitForOperations(true)).actionGet();
 
